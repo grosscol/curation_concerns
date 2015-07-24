@@ -64,12 +64,13 @@ module CurationConcerns
 
     private
 
+    # @param [#read, #content_type, #original_filename] file is expected to be a readable object with original name and mimetype metadata.
     def attach_file(file)
       generic_file = ::GenericFile.new
       generic_file_actor = CurationConcerns::GenericFileActor.new(generic_file, user)
       generic_file_actor.create_metadata(curation_concern.id, curation_concern.id)
       generic_file.visibility = visibility
-      generic_file_actor.create_content(file, file.original_filename, file.content_type)
+      generic_file_actor.create_content(file)
       @generic_files ||= []
       @generic_files << generic_file # This is so that other methods like assign_representative can access the generic_files wihtout reloading them from fedora
       Hydra::Works::AddGenericFileToGenericWork.call(curation_concern, generic_file)

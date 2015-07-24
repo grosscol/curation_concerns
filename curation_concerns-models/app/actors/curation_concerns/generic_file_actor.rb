@@ -51,10 +51,11 @@ module CurationConcerns
       yield(generic_file) if block_given?
     end
 
-    def create_content(file, file_name, mime_type)
+    # @param [#read, #content_type, #original_filename] file is expected to be a readable object with original name and mimetype metadata.
+    def create_content(file)
       # Tell UploadFileToGenericFile service to skip versioning because versions will be minted by VersionCommitter (called by save_characterize_and_record_committer) when necessary
-      Hydra::Works::UploadFileToGenericFile.call(generic_file, file.path, versioning: false, mime_type: mime_type, original_name: file_name)
-      generic_file.label ||= file_name
+      Hydra::Works::UploadFileToGenericFile.call(generic_file, file, versioning: false)
+      generic_file.label ||= file.original_filename || ""
       generic_file.title = [generic_file.label] if generic_file.title.blank?
       save_characterize_and_record_committer do
         if CurationConcerns.config.respond_to?(:after_create_content)
