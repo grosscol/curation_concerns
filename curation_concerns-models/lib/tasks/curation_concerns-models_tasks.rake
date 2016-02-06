@@ -1,6 +1,3 @@
-import File.join(Gem::Specification.find_by_name('hydra-works').gem_dir,
-                     'lib/tasks/hydra-works_tasks.rake')
-
 namespace :curation_concerns do
   namespace :jetty do
 
